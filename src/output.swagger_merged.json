@@ -1,0 +1,807 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Car info",
+    "description": "You can find endpoints responsible for fetching information about car",
+    "contact": {
+      "email": "support@wenn.no"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "${DOC_URL}"
+    }
+  ],
+  "tags": [
+    {
+      "name": "carinfo",
+      "description": "Access to Petstore orders"
+    },
+    {
+      "name": "profile",
+      "description": "Everything about your Profile"
+    },
+    {
+      "name": "store",
+      "description": "Access to Petstore orders"
+    }
+  ],
+  "paths": {
+    "/vehicle/license/{id}": {
+      "get": {
+        "tags": [
+          "carinfo"
+        ],
+        "summary": "Get car vin number",
+        "description": "Takes a car registration license plate as input and returns VIN number",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "the id of the vehicle, in the form of a registration plate",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Vehicle identification number found",
+                  "data": {
+                    "VIN": "ASDAWEQWEQWEASDASD"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Vehicle not found",
+                        "detail": "Vehicle not found"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Internal Server Error",
+                        "detail": "3rd party service was unable to provide the response"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/vehicle/vin/{id}": {
+      "get": {
+        "tags": [
+          "carinfo"
+        ],
+        "summary": "Get vehicle information",
+        "description": "Based on input in the format of a VIN number, information is returned from the DMV",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "VIN number of the car",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Vehicle found",
+                  "data": {
+                    "make": "SKODA",
+                    "year": "2012",
+                    "kw": "77",
+                    "displacement": "1598",
+                    "fuel": "Diesel",
+                    "color": "Grå",
+                    "VIN": "ASDAWEQWEQWEASDASD",
+                    "gear": "Manuell"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute",
+                        "detail": "Parameter id is expected to be VIN type (13-17 chars)."
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Vehicle not found",
+                        "detail": "Vehicle not found"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Internal Server Error",
+                        "detail": "3rd party service was unable to provide the response"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/vehicle/license/{id}/pricing": {
+      "get": {
+        "tags": [
+          "carinfo"
+        ],
+        "summary": "Vehicle list price",
+        "description": "Based on input in the format of a registration number, average list price is returned",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "km",
+            "description": "Mileage on the car in KM",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Registration plate number of the car",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "message": "Vehicle found",
+                  "data": {
+                    "priceLow": 93988,
+                    "priceMedio": 99987,
+                    "priceHigh": 105986
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute",
+                        "detail": "Parameter km is required"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Vehicle not found",
+                        "detail": "Vehicle not found"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          },
+          "503": {
+            "description": "Service Unavailable",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Internal Server Error",
+                        "detail": "3rd party service was unable to provide the response"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get profile list",
+        "description": "Get the list of a users profile.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "limit number of appraisals to be returned",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page number to be returned",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "tenant",
+            "description": "tenant to fetch",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "searchBy",
+            "description": "filter content by using firstName, lastName or phone",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "meta": {
+                    "totalItems": 53,
+                    "lastPage": 27,
+                    "currentPage": 1,
+                    "currentItemsPerPage": 2,
+                    "maxPerPage": 100
+                  },
+                  "data": {
+                    "items": [
+                      {
+                        "id": "f7ba8034-64a6-425c-8629-b283eac794fe",
+                        "firstName": "Maren",
+                        "lastName": "Lundby",
+                        "email": "maren.lundby@wenn.no",
+                        "phone": "+47666555444",
+                        "created": "1606748208.535424",
+                        "modified": "1606748298.086604"
+                      },
+                      {
+                        "id": "afd6dbb0-c811-44bb-a6af-aa1fc9b6b97d",
+                        "firstName": "Silje",
+                        "lastName": "Opseth",
+                        "email": "silje.opseth@wenn.no",
+                        "phone": "+47666555444",
+                        "created": "1606748208.535424",
+                        "modified": "1606748298.086604"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute",
+                        "detail": "Parameter tenant is expected to be UUID"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/introduce": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get profile names",
+        "description": "Get the list of names of the users",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "users",
+            "description": "Array uuid of users that will be fetched example: ?users=533c1e58-27ed-461b-8ccd-982eb6ca71b8,b2d9f509-d468-4595-ba23-ca40e4d5d256",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      {
+                        "id": "f7ba8034-64a6-425c-8629-b283eac794fe",
+                        "firstName": "Maren",
+                        "lastName": "Lundby",
+                        "email": "maren.lundby@wenn.no",
+                        "phone": "+47666555444"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute",
+                        "detail": "Parameter users is expected to be UUID string array."
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    },
+    "/{id}": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get profile detail",
+        "description": "Extract all the information stored in the users profile.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "The id of user you would like fetch from service",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "partnerId": "f7ba8034-64a6-425c-8629-b283eac794fe",
+                    "firstName": "Maren",
+                    "lastName": "Lundby",
+                    "email": "maren.lundby@wenn.no",
+                    "phone": "+47666555444"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute",
+                        "detail": "Parameter id is expected to be UUID"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          }
+        ]
+      }
+    },
+    "/{id}/tenants": {
+      "get": {
+        "tags": [
+          "profile"
+        ],
+        "summary": "Get profile tenants",
+        "description": "Extract all tenants related to the user.",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "description": "The id of user you would like fetch from service",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "example": {
+                  "success": true,
+                  "data": {
+                    "items": [
+                      "384f1aaf-2d33-4489-b0d1-d4e8405023de"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "example": {
+                  "errors": {
+                    "items": [
+                      {
+                        "title": "Invalid Attribute"
+                      },
+                      {
+                        "detail": "Parameter id is expected to be UUID"
+                      }
+                    ]
+                  },
+                  "success": false
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "objectExample": {
+                    "$ref": "#/components/examples/unauthorized"
+                  }
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "content": {}
+          },
+          "502": {
+            "description": "Bad Gateway",
+            "content": {}
+          }
+        },
+        "security": [
+          {
+            "oAuthWenn.ai": [
+              "global:admin"
+            ]
+          },
+          {
+            "ApiKeyAuth": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "examples": {
+      "unauthorized": {
+        "value": {
+          "message": "Unauthorized"
+        },
+        "summary": "A sample object"
+      }
+    },
+    "securitySchemes": {
+      "oAuthWenn.ai": {
+        "type": "oauth2",
+        "description": "This API uses OAuth 2 with the implicit grant flow.",
+        "flows": {
+          "password": {
+            "tokenUrl": "${AUTH_URL}",
+            "scopes": {
+              "global:admin": "global admin priviliges"
+            }
+          }
+        }
+      },
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-api-key"
+      }
+    }
+  }
+}
